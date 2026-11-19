@@ -141,8 +141,20 @@ func parseOrderCard(card *html.Node) OrderSummary {
 	s := OrderSummary{Currency: MarketplaceCurrency}
 	cardText := Text(card)
 
-	// Order ID — most reliable signal.
-	s.OrderID = ExtractOrderID(cardText)
+	// Current cards retain their ID in a slot attribute even when the body is
+	// client-side encrypted. Require the exact slot namespace and a complete ID;
+	// generic link scans can mistake recommendation session IDs for order IDs.
+	const slotPrefix = "amzn1.yourorders.order-card."
+	if slot := Attr(card, "data-csa-c-slot-id"); strings.HasPrefix(slot, slotPrefix) {
+		id := strings.TrimPrefix(slot, slotPrefix)
+		if id != "" && ExtractOrderID(id) == id {
+			s.OrderID = id
+		}
+	}
+	// Older markup still exposes the ID in visible card text.
+	if s.OrderID == "" {
+		s.OrderID = ExtractOrderID(cardText)
+	}
 
 	// Placed date: look for "ORDER PLACED <date>" pair.
 	if i := strings.Index(strings.ToUpper(cardText), "ORDER PLACED"); i >= 0 {
@@ -212,7 +224,7 @@ func extractStatus(cardText string) (status, eta, delivered string) {
 	case strings.Contains(lower, "out for delivery"):
 		status = "Out for delivery"
 		if i := strings.Index(lower, "out for delivery"); i >= 0 {
-			eta = resolveDeliveryDate(cardText[i+len("out for delivery"):min(i+len("out for delivery")+80, len(cardText))])
+			eta = resolveDeliveryDate(cardText[i+len("out for delivery") : min(i+len("out for delivery")+80, len(cardText))])
 		}
 		return
 	case strings.Contains(lower, "delivered"):
@@ -231,7 +243,7 @@ func extractStatus(cardText string) (status, eta, delivered string) {
 		if i := strings.Index(lower, "arriving"); i >= 0 {
 			// Window starts after the word "arriving" so relative terms
 			// ("today"/"tomorrow"/weekday) aren't shadowed by the label itself.
-			eta = resolveDeliveryDate(cardText[i+len("arriving"):min(i+len("arriving")+80, len(cardText))])
+			eta = resolveDeliveryDate(cardText[i+len("arriving") : min(i+len("arriving")+80, len(cardText))])
 		}
 		return
 	case strings.Contains(lower, "shipped"):

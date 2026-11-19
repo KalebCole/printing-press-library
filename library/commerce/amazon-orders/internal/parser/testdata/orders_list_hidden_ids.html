@@ -1,0 +1,27 @@
+<!doctype html>
+<!-- Sanitized reconstruction of PR #1116's encrypted-slot-ID regression sample,
+     not a live page capture. All IDs, products, amounts and dates are synthetic.
+     The third card exercises fields when Amazon still supplies plaintext. -->
+<html><body>
+<div class="order-card js-order-card" data-csa-c-slot-id="amzn1.yourorders.order-card.111-1111111-1111111">
+  <div class="a-box-group">
+    <div class="csd-encrypted-sensitive"><script>/* encrypted payload omitted */</script></div>
+    <a href="/gp/buyagain/ref=pd_yo_rr/999-9999999-9999999?ue_sid=999-9999999-9999999">Buy it again</a>
+    <a href="/your-orders/order-details?orderID=111-1111111-1111111">View order details</a>
+  </div>
+</div>
+<div class="order-card js-order-card" data-csa-c-slot-id="amzn1.yourorders.order-card.D01-2222222-2222222">
+  <div class="a-box-group">
+    <div class="csd-encrypted-sensitive"><script>/* encrypted payload omitted */</script></div>
+    <a href="/gp/buyagain/ref=pd_yo_rr/999-9999999-9999999?ue_sid=999-9999999-9999999">Buy it again</a>
+  </div>
+</div>
+<div class="order-card js-order-card" data-csa-c-slot-id="amzn1.yourorders.order-card.333-3333333-3333333">
+  <div class="a-box-group">
+    <div class="order-header"><span>ORDER PLACED</span><span>November 1, 2026</span>
+      <span>TOTAL</span><span>$24.95</span></div>
+    <a href="/dp/B000000001">Example notebook</a>
+  </div>
+</div>
+<ul class="a-pagination"><li class="a-last"><a href="/your-orders/orders?startIndex=10">Next</a></li></ul>
+</body></html>
