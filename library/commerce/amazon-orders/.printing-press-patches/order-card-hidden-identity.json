@@ -1,0 +1,15 @@
+{
+  "schema_version": 2,
+  "id": "order-card-hidden-identity",
+  "applied_at": "2026-11-19",
+  "base_run_id": "20260510-105710",
+  "base_printing_press_version": "4.2.2",
+  "summary": "Recover order identity from the per-card slot attribute when Amazon encrypts visible order content, retaining the visible-text fallback.",
+  "reason": "Amazon can omit order IDs from plaintext while preserving them in the order-card slot. Generic link scraping is unsafe because recommendation session IDs have the same shape as order IDs; unavailable encrypted fields must remain empty.",
+  "files": [
+    "internal/parser/orders_list.go",
+    "internal/parser/orders_list_hidden_ids_test.go",
+    "internal/parser/testdata/orders_list_hidden_ids.html"
+  ],
+  "validated_outcome": "A sanitized reconstruction of PR #1116 markup yields three distinct orders instead of zero, preserves exposed date/total/items, and ignores shared session-ID decoys."
+}
